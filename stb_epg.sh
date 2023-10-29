@@ -13,6 +13,12 @@
 # This is hard coded now!            stream_id_data="${stream_id_data} ${SERVICE_tag}=\"tv\""
 #
 #######################################################################################################################
+#script run if ping success
+IP="8.8.8.8"
+
+
+if ping -c 2 $IP &> /dev/null; then 
+
 
 Counter=0
 
@@ -81,6 +87,11 @@ GET_ALL="NO"
 ONLY_CONFIG="FALSE"
 LOGGING="FALSE"
 PREVIOUSLY_SHOWN="NO"
+
+#get private ip of stb using ip route get $IP | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}'
+SETIP_STB=$(ip route get $IP | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
+#find ip 192.168.1.97 located in stb_epg.cfg and replace with the new IP of stb
+sed -i 's/192.168.1.97/'$SETIP_STB'/' /usr/script/stb_epg.cfg
 
 STB_maks=0
 STB_Count=0
@@ -1679,3 +1690,7 @@ if [[ "${LOGGING}" == "TRUE" ]]; then
   echo "" >> ${DIR_log}${LOGFILE}
 fi
 
+    #write to log file error_information.txt
+    echo "Stb_epg script ping failed, check internet connection on $(date)" >> /etc/enigma2/error_information.txt
+
+fi
