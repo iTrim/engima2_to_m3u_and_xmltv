@@ -102,7 +102,7 @@ if ping -c 2 $IP &> /dev/null; then
         else
 	
  	   #change stb ip address
-	   sed -i 's/192.168.0.1/'$SETIP_STB'/' /usr/script/stb_epg.cfg
+	   sed -i 's/192.168.1.97/'$SETIP_STB'/' /usr/script/stb_epg.cfg
 	
 	fi  
 	
