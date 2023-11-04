@@ -88,21 +88,21 @@ if ping -c 2 $IP &> /dev/null; then
 	LOGGING="FALSE"
 	PREVIOUSLY_SHOWN="NO"
 
- 	#Delete lines that contain stb_epg
+ 	#Delete lines that contain stb_epg to avoid filling up stb_epg_information.txt
 	sed -i '/stb_epg/d' /etc/enigma2/stb_epg_information.txt 
 	echo -e "stb_epg script has started on $(date)" >> /etc/enigma2/stb_epg_information.txt
 	#get private ip of stb using ip route get $IP | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}'
 	SETIP_STB=$(ip route get $IP | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
-	#if stb ip is already the same result from ping the output to information
- 
+	
+ 	#if stb ip is already the same result from ping the output to information  
 	if grep $SETIP_STB /usr/script/stb_epg.cfg; then
-	    
-	   echo -e "$SETIP_STB is STB private IP address stb_epg $(date)" >> /etc/enigma2/stb_epg_information.txt   
+ 
+	 echo -e "$SETIP_STB is STB private IP address stb_epg $(date)" >> /etc/enigma2/stb_epg_information.txt 
 	    
         else
-	
- 	   #change stb ip address
-	   sed -i 's/192.168.1.97/'$SETIP_STB'/' /usr/script/stb_epg.cfg
+	 #if stb ip is not the same result from ping the output to information
+         #If you don't specify -r, you will need to escape the braces like s/[0-9]\{1,3\}.[0-9]\{1,3\}.[0-9]\{1,3\}.[0-9]\{1,3\}/	
+         sed -r  -i 's/[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}/'$SETIP_STB'/' /usr/script/stb_epg.cfg		
 	
 	fi  
 	
