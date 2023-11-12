@@ -19,7 +19,9 @@ IP="8.8.8.8"
 
 if ping -c 2 $IP &> /dev/null; then 
 
-
+  	#put stb in sleep to prevent damage to stb os
+  	init 4
+  
 	Counter=0
 	
 	Change_Log ()
@@ -101,8 +103,10 @@ if ping -c 2 $IP &> /dev/null; then
 	    
         else
 	 #if stb ip is not the same result from ping the output to information
-         #If you don't specify -r, you will need to escape the braces like s/[0-9]\{1,3\}.[0-9]\{1,3\}.[0-9]\{1,3\}.[0-9]\{1,3\}/	
-         sed -r  -i 's/[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}/'$SETIP_STB'/' /usr/script/stb_epg.cfg		
+      	 #removing STB=1,IP,8001 set in .cfg 
+      	 #If you don't specify -r, you will need to escape the braces like s/[0-9]\{1,3\}.[0-9]\{1,3\}.[0-9]\{1,3\}.[0-9]\{1,3\}/
+      	 #setting new STB=1,IP,8001, in .cfg
+      	 sed -r  -i 's/STB=1,[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3},8001/STB=1,'$SETIP_STB',8001/' /usr/script/stb_epg.cfg
 	
 	fi  
 	
@@ -1704,6 +1708,13 @@ if ping -c 2 $IP &> /dev/null; then
 	fi
 
 	echo -e "stb_epg script successfully completed on $(date)" >> /etc/enigma2/stb_epg_information.txt
+
+        #upload xml file to epg server umcomment below and set to your server 
+	#location of stb1_xmltv.xml and user to upload to server with location
+        #scp /media/hdd/stb1_xmltv.xml user@serverIP:/var/www/folderonserver/
+	
+ 	#reboot stb after epg is complete
+    	init 3
 
 else
 
